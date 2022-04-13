@@ -4854,9 +4854,14 @@ func TestTransToTransParamConvert(t *testing.T) {
 	}
 	tx, err := NewTransaction(transParam)
 	assert.NoError(t, err)
+<<<<<<< HEAD
 	ConvertedTransParam := tx.ToTransactionParams()
 	assert.Equal(t, ConvertedTransParam, transParam)
 	// Test if timeout is valid
 	assert.GreaterOrEqual(t, tb.MaxTime, time.Now().UTC().Unix())
 	assert.GreaterOrEqual(t, ConvertedTransParam.Timebounds.MaxTime, time.Now().UTC().Unix())
+=======
+	ConvertedTrans := tx.ConvertToTransactionParam(transParam.IncrementSequenceNum)
+	assert.Equal(t, *ConvertedTrans, transParam)
+>>>>>>> fe6898822aff90a7807c42265e158d5be70b9562
 }
