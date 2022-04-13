@@ -269,6 +269,20 @@ func (t *Transaction) HashHex(network string) (string, error) {
 	return hashHex(t.envelope, network)
 }
 
+// Generates TranscationParam from a Transcation, Pass your own increment sequence flag.
+func (t *Transaction) ConvertToTransactionParam(incrementSeqFlag bool) *TransactionParams {
+	srcAccount := t.SourceAccount()
+	tp := TransactionParams{
+		Memo:                 t.Memo(),
+		Operations:           t.Operations(),
+		Timebounds:           t.Timebounds(),
+		BaseFee:              t.BaseFee(),
+		SourceAccount:        &srcAccount,
+		IncrementSequenceNum: incrementSeqFlag,
+	}
+	return &tp
+}
+
 func (t *Transaction) clone(signatures []xdr.DecoratedSignature) *Transaction {
 	newTx := new(Transaction)
 	*newTx = *t

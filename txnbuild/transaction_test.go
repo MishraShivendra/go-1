@@ -4841,3 +4841,19 @@ func TestGenericTransaction_HashHex(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, expected, hashHex)
 }
+
+func TestTransToTransParamConvert(t *testing.T) {
+	kp0 := newKeypair0()
+
+	tb := NewTimeout(300)
+	transParam := TransactionParams{
+		SourceAccount: &SimpleAccount{AccountID: kp0.Address(), Sequence: 1},
+		Operations:    []Operation{&BumpSequence{BumpTo: 0}},
+		BaseFee:       MinBaseFee,
+		Timebounds:    tb,
+	}
+	tx, err := NewTransaction(transParam)
+	assert.NoError(t, err)
+	ConvertedTrans := tx.ConvertToTransactionParam(transParam.IncrementSequenceNum)
+	assert.Equal(t, *ConvertedTrans, transParam)
+}
