@@ -269,6 +269,22 @@ func (t *Transaction) HashHex(network string) (string, error) {
 	return hashHex(t.envelope, network)
 }
 
+// Generates TransactionParams from a Transaction. ToTransactionParams() sets
+// IncrementSequenceNum field to default in returned TransactionParams.
+// In some cases such as if timebounds is nil or invalid, returned TransactionParams.Timebounds
+// might also be invalid. It is advised to validate Timebounds in such cases.
+func (t *Transaction) ToTransactionParams() TransactionParams {
+	srcAccount := t.SourceAccount()
+	tp := TransactionParams{
+		Memo:          t.Memo(),
+		Operations:    t.Operations(),
+		Timebounds:    t.Timebounds(),
+		BaseFee:       t.BaseFee(),
+		SourceAccount: &srcAccount,
+	}
+	return tp
+}
+
 func (t *Transaction) clone(signatures []xdr.DecoratedSignature) *Transaction {
 	newTx := new(Transaction)
 	*newTx = *t

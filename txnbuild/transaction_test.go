@@ -4841,3 +4841,22 @@ func TestGenericTransaction_HashHex(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, expected, hashHex)
 }
+
+func TestTransToTransParamConvert(t *testing.T) {
+	kp0 := newKeypair0()
+
+	tb := NewTimeout(300)
+	transParam := TransactionParams{
+		SourceAccount: &SimpleAccount{AccountID: kp0.Address(), Sequence: 1},
+		Operations:    []Operation{&BumpSequence{BumpTo: 0}},
+		BaseFee:       MinBaseFee,
+		Timebounds:    tb,
+	}
+	tx, err := NewTransaction(transParam)
+	assert.NoError(t, err)
+	ConvertedTransParam := tx.ToTransactionParams()
+	assert.Equal(t, ConvertedTransParam, transParam)
+	// Test if timeout is valid
+	assert.GreaterOrEqual(t, tb.MaxTime, time.Now().UTC().Unix())
+	assert.GreaterOrEqual(t, ConvertedTransParam.Timebounds.MaxTime, time.Now().UTC().Unix())
+}
