@@ -5098,13 +5098,16 @@ func TestTransToTransParamConvert(t *testing.T) {
 		SourceAccount: &SimpleAccount{AccountID: kp0.Address(), Sequence: 1},
 		Operations:    []Operation{&BumpSequence{BumpTo: 0}},
 		BaseFee:       MinBaseFee,
-		Timebounds:    tb,
+		preconditions: Preconditions{
+			TimeBounds:                 NewTimeout(300),
+			LedgerBounds:               &LedgerBounds{0, 1},
+			MinSequenceNumber:          nil,
+			MinSequenceNumberAge:       10,
+			MinSequenceNumberLedgerGap: 2,
+		},
 	}
 	tx, err := NewTransaction(transParam)
 	assert.NoError(t, err)
 	ConvertedTransParam := tx.ToTransactionParams()
 	assert.Equal(t, ConvertedTransParam, transParam)
-	// Test if timeout is valid
-	assert.GreaterOrEqual(t, tb.MaxTime, time.Now().UTC().Unix())
-	assert.GreaterOrEqual(t, ConvertedTransParam.Timebounds.MaxTime, time.Now().UTC().Unix())
 }
