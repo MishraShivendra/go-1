@@ -5093,12 +5093,11 @@ func TestGenericTransaction_HashHex(t *testing.T) {
 func TestTransToTransParamConvert(t *testing.T) {
 	kp0 := newKeypair0()
 
-	tb := NewTimeout(300)
 	transParam := TransactionParams{
 		SourceAccount: &SimpleAccount{AccountID: kp0.Address(), Sequence: 1},
 		Operations:    []Operation{&BumpSequence{BumpTo: 0}},
 		BaseFee:       MinBaseFee,
-		preconditions: Preconditions{
+		Preconditions: Preconditions{
 			TimeBounds:                 NewTimeout(300),
 			LedgerBounds:               &LedgerBounds{0, 1},
 			MinSequenceNumber:          nil,
